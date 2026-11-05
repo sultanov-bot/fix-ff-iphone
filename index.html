@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0b0c10">
+    <meta name="description" content="Настройки чувствительности и тренировка для Free Fire MAX. Работает как приложение на iPhone.">
+    <title>FIX FF — настройки и тренировка</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b0c10;
+        --panel: #12151b;
+        --panel-soft: #171b23;
+        --line: #252c35;
+        --text: #f3f6f7;
+        --muted: #929da7;
+        --accent: #21e6bd;
+        --accent-soft: rgba(33, 230, 189, .12);
+        --purple: #a68aff;
+        --danger: #ff847b;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-synthesis: none;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        padding: max(18px, env(safe-area-inset-top)) 16px max(26px, env(safe-area-inset-bottom));
+        background:
+          radial-gradient(ellipse at 50% -18%, rgba(33, 230, 189, .12), transparent 38rem),
+          var(--bg);
+        color: var(--text);
+      }
+
+      button, input { font: inherit; }
+      button { color: inherit; }
+      .shell { width: min(100%, 500px); margin: 0 auto; }
+      .topbar { display: flex; align-items: center; justify-content: space-between; margin: 5px 2px 22px; }
+      .brand { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 800; letter-spacing: .11em; }
+      .brand-mark {
+        display: grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border: 1px solid rgba(33, 230, 189, .35);
+        border-radius: 11px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: 12px;
+        letter-spacing: -.05em;
+      }
+      .offline { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 11px; }
+      .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
+      .hero { margin: 0 2px 20px; }
+      .eyebrow { color: var(--accent); font-size: 10px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+      h1 { margin: 7px 0 8px; font-size: clamp(26px, 7vw, 35px); letter-spacing: -.045em; line-height: 1.08; }
+      .intro { max-width: 390px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+      .notice {
+        display: flex;
+        gap: 10px;
+        margin: 0 0 16px;
+        padding: 12px 13px;
+        border: 1px solid rgba(166, 138, 255, .2);
+        border-radius: 13px;
+        background: rgba(166, 138, 255, .07);
+        color: #c9c0e8;
+        font-size: 11px;
+        line-height: 1.5;
+      }
+      .notice strong { color: #e6deff; }
+      .notice-icon { flex: 0 0 auto; color: var(--purple); font-size: 15px; }
+      .card {
+        margin-bottom: 13px;
+        padding: 17px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: linear-gradient(145deg, rgba(255,255,255,.025), transparent 55%), var(--panel);
+        box-shadow: 0 12px 28px rgba(0,0,0,.13);
+      }
+      .card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+      h2 { margin: 0; font-size: 15px; letter-spacing: -.02em; }
+      .subheading { margin: 5px 0 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
+      .device-note { margin: -7px 0 15px; }
+      .tag {
+        flex: 0 0 auto;
+        padding: 5px 8px;
+        border: 1px solid rgba(33, 230, 189, .2);
+        border-radius: 20px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: 9px;
+        font-weight: 750;
+        letter-spacing: .04em;
+      }
+      .presets { display: flex; gap: 7px; margin-bottom: 16px; }
+      .preset {
+        flex: 1;
+        min-height: 35px;
+        padding: 7px 5px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--panel-soft);
+        color: #aeb8c1;
+        font-size: 10px;
+        cursor: pointer;
+      }
+      .preset[aria-pressed="true"] { border-color: rgba(33,230,189,.55); background: var(--accent-soft); color: var(--accent); }
+      .slider-row { margin: 0 0 15px; }
+      .slider-row:last-child { margin-bottom: 0; }
+      .slider-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 11px; }
+      .slider-label output { min-width: 30px; color: var(--accent); font-variant-numeric: tabular-nums; text-align: right; }
+      input[type="range"] {
+        display: block;
+        width: 100%;
+        height: 20px;
+        margin: 0;
+        appearance: none;
+        background: transparent;
+        cursor: pointer;
+      }
+      input[type="range"]::-webkit-slider-runnable-track { height: 4px; border-radius: 8px; background: linear-gradient(to right, var(--accent) var(--fill, 50%), #293039 var(--fill, 50%)); }
+      input[type="range"]::-moz-range-track { height: 4px; border-radius: 8px; background: #293039; }
+      input[type="range"]::-moz-range-progress { height: 4px; border-radius: 8px; background: var(--accent); }
+      input[type="range"]::-webkit-slider-thumb {
+        width: 16px;
+        height: 16px;
+        margin-top: -6px;
+        appearance: none;
+        border: 3px solid #d8fff6;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 12px rgba(33,230,189,.5);
+      }
+      input[type="range"]::-moz-range-thumb { width: 10px; height: 10px; border: 3px solid #d8fff6; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px rgba(33,230,189,.5); }
+      .actions { display: flex; gap: 9px; margin-top: 17px; }
+      .button {
+        min-height: 42px;
+        padding: 10px 13px;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        background: var(--panel-soft);
+        font-size: 11px;
+        font-weight: 750;
+        cursor: pointer;
+        transition: transform .15s ease, border-color .15s ease;
+      }
+      .button:active, .preset:active { transform: scale(.98); }
+      .button-primary { flex: 1; border-color: var(--accent); background: var(--accent); color: #06221c; }
+      .button-quiet { color: #c3cbd1; }
+      .saved-note { min-height: 15px; margin: 9px 0 0; color: var(--accent); font-size: 10px; }
+      .drill-box { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 13px; background: var(--panel-soft); }
+      .drill-time { color: var(--accent); font-size: 23px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -.04em; }
+      .drill-copy { margin-top: 3px; color: var(--muted); font-size: 10px; line-height: 1.4; }
+      .drill-box .button { min-width: 98px; }
+      .tip-list { display: grid; gap: 9px; margin: 0; padding: 0; list-style: none; }
+      .tip { display: flex; align-items: flex-start; gap: 10px; color: #c3cbd1; font-size: 11px; line-height: 1.45; }
+      .check {
+        display: grid;
+        flex: 0 0 18px;
+        width: 18px;
+        height: 18px;
+        margin-top: 1px;
+        place-items: center;
+        border: 1px solid #39434d;
+        border-radius: 6px;
+        background: #171b23;
+        color: #06221c;
+        font-size: 11px;
+        cursor: pointer;
+      }
+      .check[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); }
+      .tip strong { color: var(--text); font-weight: 650; }
+      .install-steps { display: grid; gap: 8px; margin: 13px 0 0; padding: 0; list-style: none; counter-reset: steps; }
+      .install-steps li { display: flex; align-items: center; gap: 9px; color: #b6c0c8; font-size: 11px; line-height: 1.4; counter-increment: steps; }
+      .install-steps li::before {
+        display: grid;
+        flex: 0 0 20px;
+        width: 20px;
+        height: 20px;
+        place-items: center;
+        border-radius: 50%;
+        background: #202630;
+        color: var(--accent);
+        content: counter(steps);
+        font-size: 10px;
+        font-weight: 800;
+      }
+      .install-note { margin: 10px 0 0; color: var(--muted); font-size: 10px; line-height: 1.5; }
+      .footer { padding: 2px 4px 8px; color: #737e88; font-size: 10px; line-height: 1.55; text-align: center; }
+      .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; clip-path: inset(50%); }
+      @media (max-width: 380px) {
+        .card-heading { flex-wrap: wrap; }
+        .card-heading > div { min-width: 0; }
+      }
+      @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div class="brand"><span class="brand-mark" aria-hidden="true">FF</span><span>FIX FF</span></div>
+        <div class="offline"><span class="dot" aria-hidden="true"></span><span>ЛИЧНЫЕ НАСТРОЙКИ</span></div>
+      </header>
+
+      <section class="hero" aria-labelledby="page-title">
+        <div class="eyebrow">твой игровой профиль</div>
+        <h1 id="page-title">Настрой игру<br>под себя</h1>
+        <p class="intro">Подбери чувствительность, сохрани профиль и потренируй контроль прицела. Всё работает прямо в браузере.</p>
+      </section>
+
+      <aside class="notice">
+        <span class="notice-icon" aria-hidden="true">✦</span>
+        <span><strong>Без читов и риска для аккаунта.</strong> Сайт не подключается к игре и не меняет её файлы — настройки нужно вручную перенести в Free Fire MAX.</span>
+      </aside>
+
+      <section class="card" aria-labelledby="sensitivity-title">
+        <div class="card-heading">
+          <div>
+            <h2 id="sensitivity-title">Чувствительность</h2>
+            <p class="subheading">Выбери отправную точку для iPhone 13 и подстрой её в тренировке.</p>
+          </div>
+          <span class="tag">СОХРАНЯЕТСЯ НА ТЕЛЕФОНЕ</span>
+        </div>
+
+        <div class="presets" role="group" aria-label="Готовые профили">
+          <button class="preset" type="button" data-preset="iphone13" aria-pressed="false">iPhone 13</button>
+          <button class="preset" type="button" data-preset="balanced" aria-pressed="true">Баланс</button>
+          <button class="preset" type="button" data-preset="fast" aria-pressed="false">Быстрый</button>
+          <button class="preset" type="button" data-preset="steady" aria-pressed="false">Плавный</button>
+        </div>
+        <p class="subheading device-note">iPhone 13 — пробный профиль с повышенной чувствительностью, не гарантия попаданий. Сверь диапазон со значениями в игре.</p>
+
+        <div id="sliders">
+          <label class="slider-row">
+            <span class="slider-label"><span>Общая</span><output for="general">95</output></span>
+            <input id="general" name="general" type="range" min="0" max="200" value="95">
+          </label>
+          <label class="slider-row">
+            <span class="slider-label"><span>Красная точка</span><output for="redDot">88</output></span>
+            <input id="redDot" name="redDot" type="range" min="0" max="200" value="88">
+          </label>
+          <label class="slider-row">
+            <span class="slider-label"><span>Прицел 2×</span><output for="scope2">80</output></span>
+            <input id="scope2" name="scope2" type="range" min="0" max="200" value="80">
+          </label>
+          <label class="slider-row">
+            <span class="slider-label"><span>Прицел 4×</span><output for="scope4">72</output></span>
+            <input id="scope4" name="scope4" type="range" min="0" max="200" value="72">
+          </label>
+          <label class="slider-row">
+            <span class="slider-label"><span>Снайперский прицел</span><output for="sniper">45</output></span>
+            <input id="sniper" name="sniper" type="range" min="0" max="200" value="45">
+          </label>
+          <label class="slider-row">
+            <span class="slider-label"><span>Свободный обзор</span><output for="freeLook">65</output></span>
+            <input id="freeLook" name="freeLook" type="range" min="0" max="200" value="65">
+          </label>
+        </div>
+
+        <div class="actions">
+          <button id="save-settings" class="button button-primary" type="button">Сохранить профиль</button>
+          <button id="reset-settings" class="button button-quiet" type="button">Сбросить</button>
+        </div>
+        <p id="saved-note" class="saved-note" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="card" aria-labelledby="training-title">
+        <div class="card-heading">
+          <div>
+            <h2 id="training-title">Тренировка прицела</h2>
+            <p class="subheading">Короткий раунд, чтобы привыкнуть к выбранной чувствительности.</p>
+          </div>
+          <span class="tag">30 СЕК</span>
+        </div>
+        <div class="drill-box">
+          <div>
+            <div id="timer" class="drill-time" aria-live="off">00:30</div>
+            <div class="drill-copy">Держи прицел на уровне головы мишени<br>и тренируй короткие свайпы снизу вверх.</div>
+          </div>
+          <button id="start-drill" class="button button-primary" type="button">Начать раунд</button>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="optimization-title">
+        <div class="card-heading">
+          <div>
+            <h2 id="optimization-title">Перед матчем</h2>
+            <p class="subheading">Безопасные шаги для более стабильной игры.</p>
+          </div>
+          <span class="tag">ЧЕК-ЛИСТ</span>
+        </div>
+        <ul class="tip-list">
+          <li class="tip"><button class="check" type="button" aria-pressed="false" aria-label="Отметить: закрыть лишние приложения"></button><span><strong>Закрой лишние приложения</strong> перед запуском игры.</span></li>
+          <li class="tip"><button class="check" type="button" aria-pressed="false" aria-label="Отметить: включить режим Не беспокоить"></button><span><strong>Включи «Не беспокоить»</strong>, чтобы звонки не отвлекали.</span></li>
+          <li class="tip"><button class="check" type="button" aria-pressed="false" aria-label="Отметить: проверить соединение"></button><span><strong>Проверь соединение</strong> и выбери стабильную сеть.</span></li>
+          <li class="tip"><button class="check" type="button" aria-pressed="false" aria-label="Отметить: настроить графику в игре"></button><span><strong>Настрой графику в игре</strong> под производительность устройства.</span></li>
+        </ul>
+      </section>
+
+      <section class="card" aria-labelledby="install-title">
+        <div class="card-heading">
+          <div>
+            <h2 id="install-title">Добавить на iPhone</h2>
+            <p class="subheading">Открой сайт в Safari — установка проходит через меню браузера.</p>
+          </div>
+          <span class="tag">PWA</span>
+        </div>
+        <ol class="install-steps">
+          <li>Нажми «Поделиться» в Safari.</li>
+          <li>Выбери «На экран Домой».</li>
+          <li>Нажми «Добавить» — иконка появится на экране.</li>
+        </ol>
+        <p class="install-note">Для установки сайт должен быть размещён на защищённом HTTPS-адресе. Открой его именно в Safari.</p>
+      </section>
+
+      <footer class="footer">Неофициальный фанатский компаньон. Не связан с Garena. Игровые настройки переносятся вручную.</footer>
+    </main>
+
+    <script>
+      (() => {
+        const storageKey = "fix-ff-profile-v1";
+        const defaults = { general: 95, redDot: 88, scope2: 80, scope4: 72, sniper: 45, freeLook: 65 };
+        const presets = {
+          iphone13: { general: 170, redDot: 160, scope2: 145, scope4: 125, sniper: 80, freeLook: 120 },
+          balanced: defaults,
+          fast: { general: 120, redDot: 112, scope2: 98, scope4: 86, sniper: 54, freeLook: 82 },
+          steady: { general: 78, redDot: 72, scope2: 64, scope4: 56, sniper: 35, freeLook: 52 }
+        };
+        const sliderInputs = [...document.querySelectorAll('#sliders input[type="range"]')];
+        const saveMessage = document.getElementById("saved-note");
+
+        function setSlider(input, value) {
+          const number = Math.max(Number(input.min), Math.min(Number(input.max), Number(value)));
+          input.value = String(number);
+          input.parentElement.querySelector("output").value = String(number);
+          input.style.setProperty("--fill", `${number / Number(input.max) * 100}%`);
+        }
+
+        function readSettings() {
+          return Object.fromEntries(sliderInputs.map((input) => [input.name, Number(input.value)]));
+        }
+
+        function loadSettings() {
+          try {
+            const stored = JSON.parse(localStorage.getItem(storageKey));
+            if (!stored || typeof stored !== "object" || Array.isArray(stored)) return defaults;
+            return Object.fromEntries(sliderInputs.map((input) => {
+              const value = stored[input.name];
+              return [input.name, Number.isFinite(value) ? value : defaults[input.name]];
+            }));
+          } catch (error) {
+            saveMessage.textContent = "Не удалось прочитать профиль из памяти браузера.";
+            console.error("Could not read the saved sensitivity profile.", error);
+            return defaults;
+          }
+        }
+
+        function applySettings(settings) {
+          sliderInputs.forEach((input) => setSlider(input, settings[input.name]));
+          document.querySelectorAll(".preset").forEach((button) => {
+            const preset = presets[button.dataset.preset];
+            const selected = Object.keys(preset).every((key) => preset[key] === Number(settings[key]));
+            button.setAttribute("aria-pressed", String(selected));
+          });
+        }
+
+        applySettings(loadSettings());
+        sliderInputs.forEach((input) => input.addEventListener("input", () => {
+          setSlider(input, input.value);
+          document.querySelectorAll(".preset").forEach((button) => button.setAttribute("aria-pressed", "false"));
+          saveMessage.textContent = "Изменения не сохранены.";
+        }));
+
+        document.querySelectorAll(".preset").forEach((button) => {
+          button.addEventListener("click", () => {
+            applySettings(presets[button.dataset.preset]);
+            saveMessage.textContent = "Профиль выбран — нажми «Сохранить профиль».";
+          });
+        });
+
+        document.getElementById("save-settings").addEventListener("click", () => {
+          try {
+            localStorage.setItem(storageKey, JSON.stringify(readSettings()));
+            saveMessage.textContent = "Профиль сохранён на этом устройстве.";
+          } catch (error) {
+            saveMessage.textContent = "Не удалось сохранить профиль. Проверь настройки приватности браузера.";
+            console.error("Could not save the sensitivity profile.", error);
+          }
+        });
+
+        document.getElementById("reset-settings").addEventListener("click", () => {
+          applySettings(defaults);
+          saveMessage.textContent = "Настройки сброшены. Чтобы сохранить, нажми «Сохранить профиль».";
+        });
+
+        document.querySelectorAll(".check").forEach((button, index) => {
+          const checklistKey = `fix-ff-check-${index}`;
+          button.setAttribute("aria-pressed", String(localStorage.getItem(checklistKey) === "true"));
+          button.textContent = button.getAttribute("aria-pressed") === "true" ? "✓" : "";
+          button.addEventListener("click", () => {
+            const pressed = button.getAttribute("aria-pressed") !== "true";
+            button.setAttribute("aria-pressed", String(pressed));
+            button.textContent = pressed ? "✓" : "";
+            localStorage.setItem(checklistKey, String(pressed));
+          });
+        });
+
+        let remaining = 30;
+        let drillInterval;
+        const timer = document.getElementById("timer");
+        const startButton = document.getElementById("start-drill");
+
+        function showTime() {
+          timer.textContent = `00:${String(remaining).padStart(2, "0")}`;
+        }
+
+        startButton.addEventListener("click", () => {
+          if (drillInterval) {
+            clearInterval(drillInterval);
+            drillInterval = undefined;
+            startButton.textContent = "Продолжить";
+            return;
+          }
+          if (remaining === 0) remaining = 30;
+          startButton.textContent = "Пауза";
+          drillInterval = setInterval(() => {
+            remaining -= 1;
+            showTime();
+            if (remaining <= 0) {
+              clearInterval(drillInterval);
+              drillInterval = undefined;
+              startButton.textContent = "Ещё раунд";
+              saveMessage.textContent = "Раунд завершён — попробуй настройки в игре.";
+            }
+          }, 1000);
+        });
+
+        if ("serviceWorker" in navigator) {
+          window.addEventListener("load", () => {
+            navigator.serviceWorker.register("./service-worker.js").catch((error) => {
+              console.error("Could not enable offline support.", error);
+            });
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
