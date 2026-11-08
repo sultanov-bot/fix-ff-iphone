@@ -98,11 +98,10 @@
         font-weight: 750;
         letter-spacing: .04em;
       }
-      .presets { display: flex; gap: 7px; margin-bottom: 16px; }
+      .presets { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin-bottom: 16px; }
       .preset {
-        flex: 1;
         min-height: 35px;
-        padding: 7px 5px;
+        padding: 7px;
         border: 1px solid var(--line);
         border-radius: 10px;
         background: var(--panel-soft);
@@ -154,6 +153,71 @@
       .button-primary { flex: 1; border-color: var(--accent); background: var(--accent); color: #06221c; }
       .button-quiet { color: #c3cbd1; }
       .saved-note { min-height: 15px; margin: 9px 0 0; color: var(--accent); font-size: 10px; }
+      .device-search { margin-bottom: 12px; }
+      .device-search input {
+        width: 100%;
+        min-height: 44px;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        outline-color: var(--accent);
+        background: var(--panel-soft);
+        color: var(--text);
+        font-size: 13px;
+      }
+      .device-results { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .device-option {
+        min-width: 0;
+        min-height: 43px;
+        padding: 9px 10px;
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        background: var(--panel-soft);
+        color: var(--text);
+        font-size: 11px;
+        text-align: left;
+        cursor: pointer;
+      }
+      .device-option:hover, .device-option:focus-visible { border-color: var(--accent); }
+      .device-results-note { margin: 11px 0 0; color: var(--muted); font-size: 10px; line-height: 1.5; }
+      .device-screen {
+        position: relative;
+        overflow: hidden;
+        min-height: 176px;
+        margin-bottom: 13px;
+        padding: 17px;
+        border: 1px solid rgba(255, 66, 77, .35);
+        border-radius: 18px;
+        background: radial-gradient(ellipse at 82% 25%, rgba(255, 28, 48, .34), transparent 55%), linear-gradient(145deg, #260d12, #110d12 72%);
+      }
+      .device-screen::after {
+        position: absolute;
+        inset: -45%;
+        background: linear-gradient(110deg, transparent 44%, rgba(255, 62, 75, .12) 49%, transparent 54%);
+        content: "";
+        pointer-events: none;
+        animation: red-sweep 5s ease-in-out infinite;
+      }
+      @keyframes red-sweep {
+        0%, 100% { transform: translateX(-28%); opacity: .25; }
+        50% { transform: translateX(28%); opacity: .8; }
+      }
+      .device-screen > * { position: relative; z-index: 1; }
+      .device-screen .eyebrow { color: #ff6b75; }
+      .device-screen h1 { margin: 8px 0; }
+      .device-screen p { max-width: 420px; margin: 0; color: #e6bfc2; font-size: 11px; line-height: 1.5; }
+      .device-screen .button { margin-top: 13px; }
+      .device-accent { border-color: #ff5966; background: #e93d4b; color: #fff; }
+      .shell.is-device-view > :not(.topbar):not(#device-screen):not(#sensitivity-card) { display: none; }
+      .shell.is-device-view #sensitivity-card { border-color: rgba(255, 66, 77, .28); }
+      .shell.is-device-view #sensitivity-card .slider-label output { color: #ff6b75; }
+      .shell.is-device-view #sensitivity-card input[type="range"]::-webkit-slider-runnable-track { background: linear-gradient(to right, #ff5966 var(--fill, 50%), #40272b var(--fill, 50%)); }
+      .shell.is-device-view #sensitivity-card input[type="range"]::-moz-range-progress { background: #ff5966; }
+      .shell.is-device-view #sensitivity-card input[type="range"]::-webkit-slider-thumb { border-color: #ffe3e5; background: #ff5966; box-shadow: 0 0 12px rgba(255, 63, 77, .5); }
+      .shell.is-device-view #sensitivity-card input[type="range"]::-moz-range-thumb { border-color: #ffe3e5; background: #ff5966; box-shadow: 0 0 12px rgba(255, 63, 77, .5); }
+      .shell.is-device-view #sensitivity-card .button-primary { border-color: #ff5966; background: #ff5966; color: #260d12; }
+      .shell.is-device-view #sensitivity-card .preset[aria-pressed="true"] { border-color: rgba(255,89,102,.6); background: rgba(255,89,102,.13); color: #ff8088; }
+      @media (prefers-reduced-motion: reduce) { .device-screen::after { animation: none; } }
       .drill-box { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px; border: 1px solid var(--line); border-radius: 13px; background: var(--panel-soft); }
       .drill-time { color: var(--accent); font-size: 23px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -.04em; }
       .drill-copy { margin-top: 3px; color: var(--muted); font-size: 10px; line-height: 1.4; }
@@ -219,22 +283,46 @@
         <span><strong>Без читов и риска для аккаунта.</strong> Сайт не подключается к игре и не меняет её файлы — настройки нужно вручную перенести в Free Fire MAX.</span>
       </aside>
 
-      <section class="card" aria-labelledby="sensitivity-title">
+      <section id="device-catalog" class="card" aria-labelledby="device-catalog-title">
+        <div class="card-heading">
+          <div>
+            <h2 id="device-catalog-title">Найди свой телефон</h2>
+            <p class="subheading">Поиск по популярным моделям или добавь название вручную.</p>
+          </div>
+          <span class="tag">КАТАЛОГ</span>
+        </div>
+        <label class="device-search">
+          <span class="visually-hidden">Поиск модели телефона</span>
+          <input id="device-search" type="search" maxlength="60" autocomplete="off" placeholder="Например, Galaxy S24 или Redmi Note 13">
+        </label>
+        <div id="device-results" class="device-results" role="group" aria-label="Результаты поиска телефонов"></div>
+        <p id="device-results-note" class="device-results-note" aria-live="polite"></p>
+      </section>
+
+      <section id="device-screen" class="device-screen" aria-labelledby="device-title" tabindex="-1" hidden>
+        <div class="eyebrow">ПРОФИЛЬ УСТРОЙСТВА</div>
+        <h1 id="device-title">Телефон</h1>
+        <p>Красное оформление — только тема экрана. Ниже можно вручную настроить и сохранить свой профиль для этой модели. Универсальных проверенных значений для каждого телефона нет.</p>
+        <button id="back-to-devices" class="button device-accent" type="button">← К поиску телефонов</button>
+      </section>
+
+      <section id="sensitivity-card" class="card" aria-labelledby="sensitivity-title">
         <div class="card-heading">
           <div>
             <h2 id="sensitivity-title">Чувствительность</h2>
-            <p class="subheading">Выбери отправную точку для iPhone 13 и подстрой её в тренировке.</p>
+            <p class="subheading">Выбери стартовые значения и проверь их в тренировке.</p>
           </div>
           <span class="tag">СОХРАНЯЕТСЯ НА ТЕЛЕФОНЕ</span>
         </div>
 
         <div class="presets" role="group" aria-label="Готовые профили">
-          <button class="preset" type="button" data-preset="iphone13" aria-pressed="false">iPhone 13</button>
+          <button class="preset" type="button" data-preset="starter" aria-pressed="false">Стартовый</button>
           <button class="preset" type="button" data-preset="balanced" aria-pressed="true">Баланс</button>
           <button class="preset" type="button" data-preset="fast" aria-pressed="false">Быстрый</button>
           <button class="preset" type="button" data-preset="steady" aria-pressed="false">Плавный</button>
+          <button class="preset" type="button" data-preset="recoil" aria-pressed="false">Контроль отдачи</button>
         </div>
-        <p class="subheading device-note">iPhone 13 — пробный профиль с повышенной чувствительностью, не гарантия попаданий. Сверь диапазон со значениями в игре.</p>
+        <p class="subheading device-note">«Контроль отдачи» — пробный профиль чувствительности, а не уменьшение отдачи игрой. Значения не откалиброваны для конкретной модели: проверь в тренировке и снижай их, если прицел перелетает цель.</p>
 
         <div id="sliders">
           <label class="slider-row">
@@ -274,17 +362,18 @@
         <div class="card-heading">
           <div>
             <h2 id="training-title">Тренировка прицела</h2>
-            <p class="subheading">Короткий раунд, чтобы привыкнуть к выбранной чувствительности.</p>
+            <p class="subheading">Часовой таймер для самостоятельной тренировки. Запуск — одним нажатием.</p>
           </div>
-          <span class="tag">30 СЕК</span>
+          <span class="tag">1 ЧАС</span>
         </div>
         <div class="drill-box">
           <div>
-            <div id="timer" class="drill-time" aria-live="off">00:30</div>
-            <div class="drill-copy">Держи прицел на уровне головы мишени<br>и тренируй короткие свайпы снизу вверх.</div>
+            <div id="timer" class="drill-time" aria-live="off">01:00:00</div>
+            <div class="drill-copy">Таймер работает отдельно и не меняет настройки<br>и управление в игре.</div>
           </div>
-          <button id="start-drill" class="button button-primary" type="button">Начать раунд</button>
+          <button id="start-drill" class="button button-primary" type="button">Начать 1 час</button>
         </div>
+        <p id="drill-status" class="saved-note" role="status" aria-live="polite"></p>
       </section>
 
       <section class="card" aria-labelledby="optimization-title">
@@ -306,17 +395,17 @@
       <section class="card" aria-labelledby="install-title">
         <div class="card-heading">
           <div>
-            <h2 id="install-title">Добавить на iPhone</h2>
-            <p class="subheading">Открой сайт в Safari — установка проходит через меню браузера.</p>
+            <h2 id="install-title">Добавить на устройство</h2>
+            <p class="subheading">Установка зависит от браузера и доступна не на всех устройствах.</p>
           </div>
           <span class="tag">PWA</span>
         </div>
         <ol class="install-steps">
-          <li>Нажми «Поделиться» в Safari.</li>
-          <li>Выбери «На экран Домой».</li>
-          <li>Нажми «Добавить» — иконка появится на экране.</li>
+          <li>Открой сайт в браузере устройства.</li>
+          <li>В меню выбери «Установить» или «На экран Домой».</li>
+          <li>Если такой функции нет, пользуйся сайтом в браузере.</li>
         </ol>
-        <p class="install-note">Для установки сайт должен быть размещён на защищённом HTTPS-адресе. Открой его именно в Safari.</p>
+        <p class="install-note">Для установки сайт должен быть размещён на защищённом HTTPS-адресе.</p>
       </section>
 
       <footer class="footer">Неофициальный фанатский компаньон. Не связан с Garena. Игровые настройки переносятся вручную.</footer>
@@ -325,15 +414,51 @@
     <script>
       (() => {
         const storageKey = "fix-ff-profile-v1";
+        const customDevicesKey = "fix-ff-custom-devices-v1";
+        const builtInDevices = [
+          "Apple iPhone 17", "Apple iPhone 17 Pro", "Apple iPhone 17 Pro Max", "Apple iPhone 16", "Apple iPhone 16 Plus",
+          "Apple iPhone 16 Pro", "Apple iPhone 16 Pro Max", "Apple iPhone 15", "Apple iPhone 15 Plus",
+          "Apple iPhone 15 Pro", "Apple iPhone 15 Pro Max", "Apple iPhone 14", "Apple iPhone 14 Plus",
+          "Apple iPhone 14 Pro", "Apple iPhone 14 Pro Max", "Apple iPhone 13", "Apple iPhone 13 mini",
+          "Apple iPhone 13 Pro", "Apple iPhone 13 Pro Max", "Apple iPhone 12", "Apple iPhone 12 Pro",
+          "Samsung Galaxy S25", "Samsung Galaxy S25+", "Samsung Galaxy S25 Ultra", "Samsung Galaxy S24",
+          "Samsung Galaxy S24+", "Samsung Galaxy S24 Ultra", "Samsung Galaxy S23", "Samsung Galaxy S23 Ultra",
+          "Samsung Galaxy S22", "Samsung Galaxy S22 Ultra", "Samsung Galaxy A56", "Samsung Galaxy A55",
+          "Samsung Galaxy A36", "Samsung Galaxy A35", "Samsung Galaxy A26", "Samsung Galaxy A25",
+          "Samsung Galaxy A16", "Samsung Galaxy A15", "Samsung Galaxy Z Flip6", "Samsung Galaxy Z Fold6",
+          "Xiaomi 15", "Xiaomi 15 Ultra", "Xiaomi 14", "Xiaomi 14 Ultra", "Xiaomi 13T", "Xiaomi 13T Pro",
+          "Redmi Note 14", "Redmi Note 14 Pro", "Redmi Note 13", "Redmi Note 13 Pro", "Redmi Note 13 Pro+",
+          "Redmi Note 12", "Redmi Note 12 Pro", "Redmi 14C", "Redmi 13", "Redmi 12",
+          "POCO F7", "POCO F6", "POCO F6 Pro", "POCO X7", "POCO X7 Pro", "POCO X6", "POCO X6 Pro",
+          "Google Pixel 9", "Google Pixel 9 Pro", "Google Pixel 9 Pro XL", "Google Pixel 8", "Google Pixel 8 Pro",
+          "Google Pixel 7", "Google Pixel 7 Pro", "OnePlus 13", "OnePlus 12", "OnePlus 12R", "OnePlus Nord 4",
+          "OnePlus Nord 3", "Motorola Edge 50 Pro", "Motorola Edge 50 Fusion", "Motorola Moto G85",
+          "Motorola Moto G75", "HONOR 200", "HONOR 200 Pro", "HONOR X9c", "HONOR X8b",
+          "realme 14 Pro+", "realme 13 Pro+", "realme 12 Pro+", "realme GT 6", "realme GT 6T",
+          "Huawei nova 13", "Huawei nova 12", "Nothing Phone (3)", "Nothing Phone (2a)"
+        ];
         const defaults = { general: 95, redDot: 88, scope2: 80, scope4: 72, sniper: 45, freeLook: 65 };
         const presets = {
-          iphone13: { general: 170, redDot: 160, scope2: 145, scope4: 125, sniper: 80, freeLook: 120 },
+          starter: { general: 170, redDot: 160, scope2: 145, scope4: 125, sniper: 80, freeLook: 120 },
           balanced: defaults,
           fast: { general: 120, redDot: 112, scope2: 98, scope4: 86, sniper: 54, freeLook: 82 },
-          steady: { general: 78, redDot: 72, scope2: 64, scope4: 56, sniper: 35, freeLook: 52 }
+          steady: { general: 78, redDot: 72, scope2: 64, scope4: 56, sniper: 35, freeLook: 52 },
+          recoil: { general: 185, redDot: 175, scope2: 155, scope4: 130, sniper: 75, freeLook: 110 }
         };
         const sliderInputs = [...document.querySelectorAll('#sliders input[type="range"]')];
         const saveMessage = document.getElementById("saved-note");
+        const shell = document.querySelector(".shell");
+        const deviceSearch = document.getElementById("device-search");
+        const deviceResults = document.getElementById("device-results");
+        const deviceResultsNote = document.getElementById("device-results-note");
+        const deviceScreen = document.getElementById("device-screen");
+        const deviceTitle = document.getElementById("device-title");
+        const saveButton = document.getElementById("save-settings");
+        let selectedDevice;
+
+        function profileKey(deviceName) {
+          return deviceName ? `${storageKey}:device:${deviceName.toLocaleLowerCase()}` : storageKey;
+        }
 
         function setSlider(input, value) {
           const number = Math.max(Number(input.min), Math.min(Number(input.max), Number(value)));
@@ -346,9 +471,9 @@
           return Object.fromEntries(sliderInputs.map((input) => [input.name, Number(input.value)]));
         }
 
-        function loadSettings() {
+        function loadSettings(key = storageKey) {
           try {
-            const stored = JSON.parse(localStorage.getItem(storageKey));
+            const stored = JSON.parse(localStorage.getItem(key) || (key === storageKey ? "null" : localStorage.getItem(storageKey)));
             if (!stored || typeof stored !== "object" || Array.isArray(stored)) return defaults;
             return Object.fromEntries(sliderInputs.map((input) => {
               const value = stored[input.name];
@@ -386,8 +511,10 @@
 
         document.getElementById("save-settings").addEventListener("click", () => {
           try {
-            localStorage.setItem(storageKey, JSON.stringify(readSettings()));
-            saveMessage.textContent = "Профиль сохранён на этом устройстве.";
+            localStorage.setItem(profileKey(selectedDevice), JSON.stringify(readSettings()));
+            saveMessage.textContent = selectedDevice
+              ? `Профиль для ${selectedDevice} сохранён на этом устройстве.`
+              : "Профиль сохранён на этом устройстве.";
           } catch (error) {
             saveMessage.textContent = "Не удалось сохранить профиль. Проверь настройки приватности браузера.";
             console.error("Could not save the sensitivity profile.", error);
@@ -397,6 +524,89 @@
         document.getElementById("reset-settings").addEventListener("click", () => {
           applySettings(defaults);
           saveMessage.textContent = "Настройки сброшены. Чтобы сохранить, нажми «Сохранить профиль».";
+        });
+
+        function readCustomDevices() {
+          try {
+            const stored = JSON.parse(localStorage.getItem(customDevicesKey) || "[]");
+            if (!Array.isArray(stored) || !stored.every((name) => typeof name === "string")) {
+              throw new TypeError("Saved device list has an invalid format.");
+            }
+            return stored;
+          } catch (error) {
+            console.error("Could not read the saved device list.", error);
+            deviceResultsNote.textContent = "Не удалось прочитать список пользовательских устройств.";
+            return [];
+          }
+        }
+
+        function openDevice(name) {
+          selectedDevice = name;
+          deviceTitle.textContent = name;
+          applySettings(loadSettings(profileKey(name)));
+          saveMessage.textContent = "";
+          saveButton.textContent = "Сохранить профиль телефона";
+          deviceScreen.hidden = false;
+          shell.classList.add("is-device-view");
+          deviceScreen.focus({ preventScroll: true });
+          window.scrollTo(0, 0);
+        }
+
+        function renderDevices() {
+          const query = deviceSearch.value.trim();
+          const normalizedQuery = query.toLocaleLowerCase();
+          const allDevices = [...new Set([...builtInDevices, ...readCustomDevices()])];
+          const matches = allDevices
+            .filter((name) => name.toLocaleLowerCase().includes(normalizedQuery))
+            .slice(0, 16);
+          deviceResults.replaceChildren();
+          matches.forEach((name) => {
+            const option = document.createElement("button");
+            option.type = "button";
+            option.className = "device-option";
+            option.textContent = name;
+            option.addEventListener("click", () => openDevice(name));
+            deviceResults.append(option);
+          });
+
+          const hasRelevantMatch = allDevices.some((name) => name.toLocaleLowerCase().includes(normalizedQuery));
+          if (query && !hasRelevantMatch) {
+            const addButton = document.createElement("button");
+            addButton.type = "button";
+            addButton.className = "device-option";
+            addButton.textContent = `+ Добавить «${query}»`;
+            addButton.addEventListener("click", () => {
+              const customDevices = readCustomDevices();
+              if (!customDevices.some((name) => name.toLocaleLowerCase() === normalizedQuery)) {
+                customDevices.push(query);
+                try {
+                  localStorage.setItem(customDevicesKey, JSON.stringify(customDevices));
+                } catch (error) {
+                  deviceResultsNote.textContent = "Не удалось сохранить модель. Проверь настройки приватности браузера.";
+                  console.error("Could not save the custom device.", error);
+                  return;
+                }
+              }
+              openDevice(query);
+            });
+            deviceResults.append(addButton);
+          }
+
+          deviceResultsNote.textContent = query
+            ? `Найдено: ${matches.length}${matches.length === 16 ? "+" : ""}. Если модели нет в списке, добавь её вручную.`
+            : `В каталоге ${allDevices.length} популярных моделей; показаны первые 16. Полного мирового списка нет — свою модель можно добавить через поиск.`;
+        }
+
+        deviceSearch.addEventListener("input", renderDevices);
+        renderDevices();
+        document.getElementById("back-to-devices").addEventListener("click", () => {
+          shell.classList.remove("is-device-view");
+          deviceScreen.hidden = true;
+          selectedDevice = undefined;
+          saveButton.textContent = "Сохранить профиль";
+          renderDevices();
+          deviceSearch.focus({ preventScroll: true });
+          window.scrollTo(0, 0);
         });
 
         document.querySelectorAll(".check").forEach((button, index) => {
@@ -411,34 +621,57 @@
           });
         });
 
-        let remaining = 30;
+        const drillDuration = 60 * 60;
+        let remaining = drillDuration;
+        let deadline;
         let drillInterval;
         const timer = document.getElementById("timer");
         const startButton = document.getElementById("start-drill");
+        const drillStatus = document.getElementById("drill-status");
 
         function showTime() {
-          timer.textContent = `00:${String(remaining).padStart(2, "0")}`;
+          const hours = Math.floor(remaining / 3600);
+          const minutes = Math.floor((remaining % 3600) / 60);
+          const seconds = remaining % 60;
+          timer.textContent = [hours, minutes, seconds]
+            .map((part) => String(part).padStart(2, "0"))
+            .join(":");
+        }
+
+        function stopDrill() {
+          clearInterval(drillInterval);
+          drillInterval = undefined;
+          deadline = undefined;
+        }
+
+        function updateDrill() {
+          remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+          showTime();
+          if (remaining === 0) {
+            stopDrill();
+            startButton.textContent = "Начать снова";
+            drillStatus.textContent = "Час тренировки завершён.";
+          }
         }
 
         startButton.addEventListener("click", () => {
-          if (drillInterval) {
+          if (drillInterval !== undefined) {
+            updateDrill();
+            if (drillInterval === undefined) return;
             clearInterval(drillInterval);
             drillInterval = undefined;
+            remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+            deadline = undefined;
+            showTime();
             startButton.textContent = "Продолжить";
             return;
           }
-          if (remaining === 0) remaining = 30;
+          if (remaining === 0) remaining = drillDuration;
+          deadline = Date.now() + remaining * 1000;
           startButton.textContent = "Пауза";
-          drillInterval = setInterval(() => {
-            remaining -= 1;
-            showTime();
-            if (remaining <= 0) {
-              clearInterval(drillInterval);
-              drillInterval = undefined;
-              startButton.textContent = "Ещё раунд";
-              saveMessage.textContent = "Раунд завершён — попробуй настройки в игре.";
-            }
-          }, 1000);
+          drillStatus.textContent = "";
+          updateDrill();
+          if (deadline !== undefined) drillInterval = setInterval(updateDrill, 1000);
         });
 
         if ("serviceWorker" in navigator) {

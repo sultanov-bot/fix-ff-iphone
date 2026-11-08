@@ -1,4 +1,4 @@
-const CACHE_NAME = "fix-ff-v2";
+const CACHE_NAME = "fix-ff-v5";
 const APP_FILES = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg", "./apple-touch-icon.png"];
 
 self.addEventListener("install", (event) => {
