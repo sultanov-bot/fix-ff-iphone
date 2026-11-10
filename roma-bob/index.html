@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>ROMA + BOB</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-wrap">
+          <h1>ROMA + BOB</h1>
+          <div class="subtitle">HEADSHOT • DRAG • MAX</div>
+        </div>
+      </header>
+
+      <main class="panel">
+        <section class="card hero-card">
+          <div class="section-head">
+            <span class="label-tag">FREE FIRE MAX</span>
+            <span class="label-tag muted">Панель настроек</span>
+          </div>
+
+          <div class="launch-row">
+            <button class="action-button primary" data-launch="max">
+              <span>FREE FIRE MAX</span>
+            </button>
+            <button class="action-button secondary" data-launch="normal">
+              <span>FREE FIRE</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="section-title">НАСТРОЙКИ ПРИЦЕЛА</div>
+          <div class="crosshair-preview-wrap">
+            <canvas id="crosshairCanvas" width="170" height="110"></canvas>
+          </div>
+
+          <div class="range-group">
+            <label>Размер прицела</label>
+            <div class="range-row">
+              <input id="crossSize" type="range" min="10" max="100" value="60" />
+              <span id="crossSizeValue">60%</span>
+            </div>
+          </div>
+
+          <div class="range-group">
+            <label>Прозрачность</label>
+            <div class="range-row">
+              <input id="crossOpacity" type="range" min="10" max="100" value="100" />
+              <span id="crossOpacityValue">100%</span>
+            </div>
+          </div>
+
+          <div class="color-row">
+            <button class="color-swatch active" data-color="#ff244e" style="--swatch:#ff244e"></button>
+            <button class="color-swatch" data-color="#ffe000" style="--swatch:#ffe000"></button>
+            <button class="color-swatch" data-color="#00e66b" style="--swatch:#00e66b"></button>
+            <button class="color-swatch" data-color="#00dfff" style="--swatch:#00dfff"></button>
+            <button class="color-swatch" data-color="#a500ff" style="--swatch:#a500ff"></button>
+            <button class="color-swatch" data-color="#ffffff" style="--swatch:#ffffff"></button>
+            <button class="color-swatch" data-color="#ff28a8" style="--swatch:#ff28a8"></button>
+            <button class="color-swatch" data-color="#ff9638" style="--swatch:#ff9638"></button>
+          </div>
+
+          <div class="mini-controls">
+            <button class="mini-button ghost" id="shrinkCrosshair">–</button>
+            <button class="mini-button ghost" id="growCrosshair">+</button>
+            <button class="mini-button ghost" id="freezeAim">ЗАМОРОЗИТЬ ПРИЦЕЛ</button>
+            <button class="mini-button ghost" id="hideAim">СКРЫТЬ ПРИЦЕЛ</button>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="section-title">ПРОФИЛИ ЧУВСТВИТЕЛЬНОСТИ</div>
+          <div class="profile-grid">
+            <button class="profile-button active" data-profile="headshot">HEADSHOT</button>
+            <button class="profile-button" data-profile="oneTap">ONE TAP</button>
+            <button class="profile-button" data-profile="dragShot">DRAG SHOT</button>
+            <button class="profile-button" data-profile="rush">RUSH</button>
+            <button class="profile-button" data-profile="proPlayer">PRO PLAYER</button>
+            <button class="profile-button max-drag" data-profile="maxDrag">MAX DRAG</button>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="section-title">КРАСНАЯ КНОПКА R</div>
+
+          <div class="range-group">
+            <label>HEADSHOT: <span id="headshotValue">50%</span></label>
+            <div class="range-row">
+              <input id="headshot" type="range" min="10" max="100" value="50" />
+            </div>
+          </div>
+
+          <div class="range-group">
+            <label>Размер круглой кнопки</label>
+            <div class="range-row">
+              <input id="buttonSize" type="range" min="20" max="100" value="60" />
+              <span id="buttonSizeValue">60%</span>
+            </div>
+          </div>
+
+          <div class="range-group">
+            <label>Прозрачность кнопки</label>
+            <div class="range-row">
+              <input id="buttonOpacity" type="range" min="10" max="100" value="85" />
+              <span id="buttonOpacityValue">85%</span>
+            </div>
+          </div>
+
+          <div class="toggle-row">
+            <label class="switch">
+              <input id="assistToggle" type="checkbox" />
+              <span class="slider"></span>
+            </label>
+            <span>AssistiveTouch / плавающая кнопка</span>
+          </div>
+
+          <div class="float-note">Выключи переключатель — появится круглая красная R-кнопка.</div>
+        </section>
+
+        <section class="card">
+          <div class="section-title">ОБЩАЯ ЧУВСТВИТЕЛЬНОСТЬ</div>
+
+          <div class="range-group">
+            <label>Общая чувствительность</label>
+            <div class="range-row">
+              <input id="generalSens" type="range" min="10" max="100" value="55" />
+              <span id="generalSensValue">55%</span>
+            </div>
+          </div>
+
+          <div class="range-group">
+            <label>Красная точка</label>
+            <div class="range-row">
+              <input id="redDot" type="range" min="10" max="100" value="62" />
+              <span id="redDotValue">62%</span>
+            </div>
+          </div>
+
+          <div class="range-group">
+            <label>Прицел 2X</label>
+            <div class="range-row">
+              <input id="scope2x" type="range" min="10" max="100" value="48" />
+              <span id="scope2xValue">48%</span>
+            </div>
+          </div>
+
+          <div class="range-group">
+            <label>Прицел 4X</label>
+            <div class="range-row">
+              <input id="scope4x" type="range" min="10" max="100" value="58" />
+              <span id="scope4xValue">58%</span>
+            </div>
+          </div>
+
+          <div class="range-group">
+            <label>Снайперский прицел</label>
+            <div class="range-row">
+              <input id="sniper" type="range" min="10" max="100" value="52" />
+              <span id="sniperValue">52%</span>
+            </div>
+          </div>
+
+          <div class="range-group">
+            <label>Свободный обзор</label>
+            <div class="range-row">
+              <input id="freeLook" type="range" min="10" max="100" value="66" />
+              <span id="freeLookValue">66%</span>
+            </div>
+          </div>
+        </section>
+
+        <div class="footer-actions">
+          <button class="action-button reset" id="resetApp">СБРОС</button>
+          <button class="action-button accent" id="saveSettings">СОХРАНИТЬ</button>
+        </div>
+
+        <div id="statusBar" class="status-bar">Готово</div>
+      </main>
+    </div>
+
+    <div id="floatingR" class="floating-r hidden" aria-label="Floating R button">
+      <span>R</span>
+    </div>
+
+    <aside id="rPanel" class="r-panel hidden" aria-label="R control panel">
+      <div class="panel-header">
+        <div class="panel-title">ROMA + BOB</div>
+      </div>
+      <div class="r-preview-wrap">
+        <canvas id="rPreviewCanvas" width="170" height="170"></canvas>
+      </div>
+
+      <div class="range-group compact">
+        <label>Размер круглой кнопки</label>
+        <div class="range-row">
+          <input id="floatingSize" type="range" min="20" max="100" value="60" />
+          <span id="floatingSizeValue">60%</span>
+        </div>
+      </div>
+
+      <div class="range-group compact">
+        <label>Прозрачность</label>
+        <div class="range-row">
+          <input id="floatingOpacity" type="range" min="10" max="100" value="85" />
+          <span id="floatingOpacityValue">85%</span>
+        </div>
+      </div>
+
+      <div class="r-actions">
+        <button id="freezeRButton" class="action-button accent">ЗАМОРОЗИТЬ ПОЗИЦИЮ</button>
+        <button id="closeRPanel" class="action-button secondary">ЗАКРЫТЬ</button>
+      </div>
+    </aside>
+
+    <script src="app.js"></script>
+  </body>
+</html>
